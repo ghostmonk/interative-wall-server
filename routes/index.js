@@ -5,7 +5,7 @@ const quickstart = require('./quickstart');
 const wss = require('../bin/www').wss;
 
 router.get('/*', function(req, res, next) {
-  const secrets = fs.readFileSync('routes/client_secret.json', 'utf8');
+  const secrets = fs.readFileSync('test/client_secret.json', 'utf8');
   return quickstart.authorize(JSON.parse(secrets))
     .then((result) => {
       wss.clients.forEach(function each(client) {

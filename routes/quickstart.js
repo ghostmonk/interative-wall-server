@@ -1,7 +1,7 @@
 const fs = require('fs');
 const google = require('googleapis').google;
 const OAuth2Client = google.auth.OAuth2;
-const TOKEN_PATH = 'routes/credentials.json';
+const TOKEN_PATH = 'test/credentials.json';
 
 exports.authorize = (credentials) => {
   const {client_secret, client_id, redirect_uris} = credentials.installed;
