@@ -13,18 +13,39 @@ exports.authorize = (credentials) => {
 };
 
 function listEvents(auth) {
+  const end = new Date();
+  end.setHours(23,59,59,999);
   return new Promise((res, reject) => {
     google.calendar({version: 'v3', auth}).events.list({
       calendarId: 'shutterstock.com_r67206b2910chd2mgaegqtjgmo@group.calendar.google.com',
       timeMin: (new Date()).toISOString(),
-      maxResults: 10,
+      timeMax: (end).toISOString(),
+      maxResults: 100,
       singleEvents: true,
       orderBy: 'startTime',
     }, (err, {data}) => {
       if(err) {
         reject(err);
       }
-      res(data.items);
+      const eventTargets = data.items.filter(i => i.start.dateTime && i.location);
+      const ptoTargets = data.items.filter(i => i.summary.includes('PTO'));
+      const munge = t => {
+        return {
+          summary: t.summary,
+          description: t.description,
+          location: t.location,
+          start: t.start,
+          end: t.end,
+          createdBy: t.creator.email
+        };
+      };
+
+      const events = eventTargets.map(munge);
+      const ptos = ptoTargets.map(munge);
+      res({
+        events,
+        ptos
+      });
     });
   });
 
