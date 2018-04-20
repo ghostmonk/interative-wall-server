@@ -2,7 +2,6 @@ var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var logger = require('morgan');
-var WebSocket = require('ws');
 
 var indexRouter = require('./routes/index');
 var envoy = require('./routes/envoy');
@@ -33,13 +32,3 @@ app.use(function(err, req, res, next) {
 });
 
 module.exports = app;
-
-const wss = new WebSocket.Server({ port: 8080 });
-
-wss.on('connection', function connection(ws) {
-  ws.on('message', function incoming(message) {
-    console.log('received: %s', message);
-  });
-
-  ws.send('something');
-});
