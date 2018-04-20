@@ -26,7 +26,7 @@ var server = http.createServer(app);
  * Create websocket server.
  */
 
-const wss = new WebSocket.Server({ server });
+var wss = new WebSocket.Server({ server });
 
 wss.on('connection', function connection(ws) {
   ws.on('message', function incoming(message) {
@@ -35,6 +35,8 @@ wss.on('connection', function connection(ws) {
 
   ws.send('something');
 });
+
+exports.wss = wss;
 
 /**
  * Listen on provided port, on all network interfaces.
