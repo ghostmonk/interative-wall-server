@@ -1,34 +1,23 @@
 const fs = require('fs');
 const readline = require('readline');
-const google = require('googleapis');
-const OAuth2Client = google.google.auth.OAuth2;
+const google = require('googleapis').google;
+const OAuth2Client = google.auth.OAuth2;
 const SCOPES = ['https://www.googleapis.com/auth/calendar.readonly'];
-const TOKEN_PATH = 'credentials.json';
+const TOKEN_PATH = 'routes/credentials.json';
 
-/**
- * Create an OAuth2 client with the given credentials, and then execute the
- * given callback function.
- * @param {Object} credentials The authorization client credentials.
- * @param {function} callback The callback to call with the authorized client.
- */
 exports.authorize = (credentials, callback) => {
-  const {client_secret, client_id, redirect_uris} = credentials.web;
+  const {client_secret, client_id, redirect_uris} = credentials.installed;
   const oAuth2Client = new OAuth2Client(client_id, client_secret, redirect_uris[0]);
 
-  // Check if we have previously stored a token.
   fs.readFile(TOKEN_PATH, (err, token) => {
-    if (err) return getAccessToken(oAuth2Client, callback);
+    if (err) {
+      return getAccessToken(oAuth2Client, callback);
+    }
     oAuth2Client.setCredentials(JSON.parse(token));
-    callback(oAuth2Client);
+    return listEvents(oAuth2Client);
   });
 };
 
-/**
- * Get and store new token after prompting for user authorization, and then
- * execute the given callback with the authorized OAuth2 client.
- * @param {google.auth.OAuth2} oAuth2Client The OAuth2 client to get token for.
- * @param {getEventsCallback} callback The callback for the authorized client.
- */
 function getAccessToken(oAuth2Client, callback) {
   const authUrl = oAuth2Client.generateAuthUrl({
     access_type: 'offline',
@@ -56,11 +45,7 @@ function getAccessToken(oAuth2Client, callback) {
   });
 }
 
-/**
- * Lists the next 10 events on the user's primary calendar.
- * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
- */
-exports.listEvents = (auth) => {
+function listEvents(auth) {
   const calendar = google.calendar({version: 'v3', auth});
   calendar.events.list({
     calendarId: 'primary',
@@ -81,4 +66,4 @@ exports.listEvents = (auth) => {
       console.log('No upcoming events found.');
     }
   });
-};
+}
