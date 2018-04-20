@@ -5,6 +5,7 @@ var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
 var envoy = require('./routes/envoy');
+var reload = require('./routes/reload');
 
 var app = express();
 
