@@ -1,12 +1,9 @@
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
-var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var authRouter = require('./routes/oauthsuccess');
 var envoy = require('./routes/envoy');
 
 var app = express();
@@ -18,11 +15,8 @@ app.set('view engine', 'jade');
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
 app.use('/envoy', envoy);
 
 // catch 404 and forward to error handler
@@ -42,14 +36,3 @@ app.use(function(err, req, res, next) {
 });
 
 module.exports = app;
-
-const io = require('socket.io')();
-
-io.on('connection', client => {
-  client.on('subscribeToTimer', interval => {
-    console.log('client is subscribing to timer with interval ', interval);
-    setInterval(() => { client.emit('timer', new Date())}, interval);
-  });
-});
-
-io.listen(8000);

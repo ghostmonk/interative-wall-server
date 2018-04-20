@@ -9,8 +9,6 @@ router.get('/', function(req, res, next) {
       return console.log('Error loading client secret file:', err);
     quickstart.authorize(JSON.parse(content), quickstart.listEvents);
   });
-
-  res.render('index', { title: 'Calendar' });
 });
 
 module.exports = router;
