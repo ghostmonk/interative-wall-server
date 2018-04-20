@@ -10,6 +10,7 @@ router.get('/*', function (req, res, next) {
 			client.send("reload");
 		}
 	});
+	return res.end("success");
 });
 
 module.exports = router;
