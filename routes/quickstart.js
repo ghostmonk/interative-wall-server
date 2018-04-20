@@ -40,11 +40,9 @@ function listEvents(auth) {
         };
       };
 
-      const events = eventTargets.map(munge);
-      const ptos = ptoTargets.map(munge);
       res({
-        events,
-        ptos
+        events: eventTargets.map(munge),
+        ptos: ptoTargets.map(munge)
       });
     });
   });
